@@ -484,7 +484,17 @@ export default function App() {
                       <div 
                         className="bg-emerald-500 h-full" 
                         style={{ width: `${(chores.filter(c => !isDue(c)).length / chores.length) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
 
+      {/* Add/Edit Chore Modal */}
       <AnimatePresence>
         {isAdding && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
@@ -498,7 +508,8 @@ export default function App() {
             >
               <h2 className="text-2xl font-bold">{editingChore ? "Edit" : "New"} Chore</h2>
               <input type="text" value={newChore.name} onChange={e => setNewChore({...newChore, name: e.target.value})} placeholder="Chore Name" className="w-full bg-gray-50 border-none rounded-xl px-4 py-3" />
-            <div className="grid grid-cols-2 gap-4">
+              
+              <div className="grid grid-cols-2 gap-4">
                 <input type="text" value={newChore.duration} onChange={e => setNewChore({...newChore, duration: e.target.value})} placeholder="Duration" className="w-full bg-gray-50 border-none rounded-xl px-4 py-3" />
                 <select value={newChore.frequency} onChange={e => setNewChore({...newChore, frequency: e.target.value as any})} className="w-full bg-gray-50 border-none rounded-xl px-4 py-3">
                   <option value="daily">Daily</option>
@@ -520,8 +531,13 @@ export default function App() {
                 />
                 <p className="text-[10px] text-gray-400 mt-1">The chore will stay in "Upcoming" status until this date.</p>
               </div>
+
               <div className="flex gap-3 pt-4">
-                {editingChore && <button type="button" onClick={handleDelete} className="p-3 text-red-500 hover:bg-red-50 rounded-xl"><Trash2 size={24} /></button>}
+                {editingChore && (
+                  <button type="button" onClick={() => handleDeleteChore(editingChore)} className="p-3 text-red-500 hover:bg-red-50 rounded-xl">
+                    <Trash2 size={24} />
+                  </button>
+                )}
                 <button type="button" onClick={() => setIsAdding(false)} className="flex-1 px-6 py-3 font-bold text-gray-500">Cancel</button>
                 <button type="submit" className="flex-1 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-200">Save</button>
               </div>
@@ -530,7 +546,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-     {/* Manage Users Modal */}
+      {/* Manage Users Modal */}
       <AnimatePresence>
         {isManagingUsers && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
@@ -544,7 +560,9 @@ export default function App() {
                       <span className="font-semibold text-sm">{user.name}</span>
                       <p className="text-[10px] text-gray-500">{user.email || "No email"}</p>
                     </div>
-                    <button onClick={(e) => handleDeleteUser(e, user.id, user.name)} className="text-gray-400 hover:text-red-500"><Trash2 size={16} /></button>
+                    <button onClick={(e) => handleDeleteUser(e, user.id, user.name)} className="text-gray-400 hover:text-red-500">
+                      <Trash2 size={16} />
+                    </button>
                   </div>
                 ))}
               </div>
