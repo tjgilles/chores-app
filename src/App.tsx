@@ -190,30 +190,44 @@ export default function App() {
     // Future expansion: sync sort_order to Firebase
   };
 
-  const getDaysOverdue = (chore: Chore) => {
+ const getDaysOverdue = (chore: Chore) => {
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    // Normalize "Today" to midnight for clean comparison
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     
-    if (!chore.last_completed_at) {
-      if (!chore.start_date) return 1;
+    // 1. Check the Start Date first
+    if (chore.start_date) {
       const start = new Date(chore.start_date);
-      const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-      const diff = today.getTime() - startDate.getTime();
+      const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
+      
+      // If today is BEFORE the start date, it's not due yet (returns a negative number)
+      if (today < startDate) {
+        return -1; 
+      }
+    }
+
+    // 2. If never completed, calculate from Start Date or default to today
+    if (!chore.last_completed_at) {
+      if (!chore.start_date) return 0;
+      const start = new Date(chore.start_date);
+      const startDate = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
+      const diff = today - startDate;
       return Math.floor(diff / (1000 * 60 * 60 * 24));
     }
 
+    // 3. Standard frequency calculation
     const last = new Date(chore.last_completed_at);
-    const lastDate = new Date(last.getFullYear(), last.getMonth(), last.getDate());
-    const diff = today.getTime() - lastDate.getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const lastDate = new Date(last.getFullYear(), last.getMonth(), last.getDate()).getTime();
+    const diff = today - lastDate;
+    const daysSince = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     switch (chore.frequency) {
-      case 'daily': return days - 1;
-      case 'weekly': return days - 7;
-      case 'monthly': return days - 30;
-      case 'quarterly': return days - 91;
-      case 'biannually': return days - 182;
-      case 'yearly': return days - 365;
+      case 'daily': return daysSince - 1;
+      case 'weekly': return daysSince - 7;
+      case 'monthly': return daysSince - 30;
+      case 'quarterly': return daysSince - 91;
+      case 'biannually': return daysSince - 182;
+      case 'yearly': return daysSince - 365;
       default: return 0;
     }
   };
@@ -314,12 +328,22 @@ export default function App() {
                       
                       <div className="flex flex-col items-end gap-3">
                         <div>
-                          {!isDue(chore) ? (
-                            <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Completed</span>
+                          {getDaysOverdue(chore) < 0 ? (
+                            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                              Upcoming
+                            </span>
+                          ) : !isDue(chore) ? (
+                            <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                              Completed
+                            </span>
                           ) : getDaysOverdue(chore) > 0 ? (
-                            <span className="text-xs font-bold uppercase tracking-widest text-red-600 bg-red-50 px-3 py-1 rounded-full">{getDaysOverdue(chore)} Days Overdue</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-red-600 bg-red-50 px-3 py-1 rounded-full">
+                              {getDaysOverdue(chore)} Days Overdue
+                            </span>
                           ) : (
-                            <span className="text-xs font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Due Today</span>
+                            <span className="text-xs font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+                              Due Today
+                            </span>
                           )}
                         </div>
                         <button onClick={() => { setEditingChore(chore); setIsAdding(true); }} className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg">
