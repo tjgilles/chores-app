@@ -145,14 +145,16 @@ export default function App() {
         });
       }
       
-      // Reset and Close
+      // Reset and Close - Must be INSIDE the try block
       setIsAdding(false);
       setEditingChore(null);
       setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
+      
     } catch (error) {
+      // The catch now has a matching try to catch from!
       console.error("Error saving chore:", error);
     }
-  }; // <--- This closes handleAddChore
+  };
 
   const handleDeleteChore = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this chore?")) return;
