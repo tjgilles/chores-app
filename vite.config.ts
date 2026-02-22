@@ -17,16 +17,11 @@ export default defineConfig(({mode}) => {
       },
     },
     server: {
-      // Keep your AI Studio HMR settings
       hmr: process.env.DISABLE_HMR !== 'true',
     },
-    // ADD THIS SECTION BELOW:
+    // UPDATED SECTION:
     preview: {
-      allowedHosts: [
-        't-2960145075---chores-app-z557zwupba-uk.a.run.app',
-        '.web.app',
-        '.firebaseapp.com'
-      ],
+      allowedHosts: true, // This allows ALL generated Google Cloud/Firebase URLs
       port: 8080,
       host: '0.0.0.0'
     }
