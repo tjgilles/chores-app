@@ -131,7 +131,7 @@ export default function App() {
     e.preventDefault();
     if (!newChore.name) return;
 
-    try {
+    try { // Start of main try block
       if (editingChore) {
         // UPDATE EXISTING
         const choreRef = doc(db, "chores", editingChore);
@@ -145,16 +145,15 @@ export default function App() {
         });
       }
       
-      // Reset and Close - Must be INSIDE the try block
+      // Reset and Close
       setIsAdding(false);
       setEditingChore(null);
       setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
       
-    } catch (error) {
-      // The catch now has a matching try to catch from!
+    } catch (error) { // This MUST follow the closing brace of the try block
       console.error("Error saving chore:", error);
     }
-  };
+  }; // End of handleAddChore
 
   const handleDeleteChore = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this chore?")) return;
