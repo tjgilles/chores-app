@@ -173,12 +173,22 @@ export default function App() {
     }
   };
 
-  const handleComplete = async (choreId: string) => {
+ const handleComplete = async (choreId: string) => {
     if (!currentUser) return;
     try {
       const choreRef = doc(db, "chores", choreId);
+      
+      // 1. Update the chore itself
       await updateDoc(choreRef, {
         last_completed_at: new Date().toISOString()
+      });
+
+      // 2. Log the completion to a new "history" collection
+      await addDoc(collection(db, "completions"), {
+        choreId,
+        userId: currentUser.id,
+        userName: currentUser.name,
+        completedAt: serverTimestamp()
       });
     } catch (error) {
       console.error("Failed to complete chore:", error);
