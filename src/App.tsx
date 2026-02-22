@@ -222,7 +222,7 @@ export default function App() {
     // Future expansion: sync sort_order to Firebase
   };
   
-  const handleEdit = (chore: Chore) => {
+const handleEdit = (chore: Chore) => {
     setEditingChore(chore.id);
     setNewChore({
       name: chore.name,
@@ -230,7 +230,7 @@ export default function App() {
       frequency: chore.frequency,
       start_date: chore.start_date || ''
     });
-    setIsAddingChore(true);
+    setIsAdding(true); // Changed from setIsAddingChore
   };
 
  const getDaysOverdue = (chore: Chore) => {
@@ -323,11 +323,15 @@ export default function App() {
                 <p className="text-gray-500 mt-1">Real-time sync active.</p>
               </div>
               <button 
-                onClick={() => setIsAdding(true)}
-                className="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-xl"
-              >
-                <Plus size={24} />
-              </button>
+            onClick={() => {
+              setEditingChore(null);
+              setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
+              setIsAdding(true);
+            }}
+            className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-2xl font-bold hover:bg-gray-800 transition-all shadow-lg active:scale-95"
+          >
+            <Plus size={20} /> Add New Chore
+          </button>
             </div>
 
             <Reorder.Group 
