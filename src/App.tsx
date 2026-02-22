@@ -127,32 +127,30 @@ export default function App() {
   }, [currentUser]);
 
   // --- Handlers ---
-  const handleAddChore = async (e: React.FormEvent) => {
+ const handleAddChore = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newChore.name) return;
 
     try {
       if (editingChore) {
-        const choreRef = doc(db, "chores", editingChore.id);
+        // UPDATE EXISTING
+        const choreRef = doc(db, "chores", editingChore);
         await updateDoc(choreRef, { ...newChore });
-        setEditingChore(null);
       } else {
+        // CREATE NEW
         await addDoc(collection(db, "chores"), {
           ...newChore,
-          sort_order: chores.length + 1,
-          createdAt: serverTimestamp(),
-          last_completed_at: null
+          created_at: new Date().toISOString(),
+          sort_order: chores.length
         });
       }
-      setIsAdding(false);
-      setNewChore({ 
-        name: "", 
-        duration: "", 
-        frequency: "daily", 
-        start_date: new Date().toISOString().split('T')[0] 
-      });
+      
+      // Reset and Close
+      setIsAddingChore(false);
+      setEditingChore(null);
+      setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
     } catch (error) {
-      console.error("Failed to save chore:", error);
+      console.error("Error saving chore:", error);
     }
   };
 
@@ -222,6 +220,17 @@ export default function App() {
   const handleReorder = async (newOrder: Chore[]) => {
     setChores(newOrder);
     // Future expansion: sync sort_order to Firebase
+  };
+  
+  const handleEdit = (chore: Chore) => {
+    setEditingChore(chore.id);
+    setNewChore({
+      name: chore.name,
+      duration: chore.duration,
+      frequency: chore.frequency,
+      start_date: chore.start_date || ''
+    });
+    setIsAddingChore(true);
   };
 
  const getDaysOverdue = (chore: Chore) => {
@@ -385,11 +394,12 @@ export default function App() {
                               Due Today
                             </span>
                           )}
-                        </div>
-                        <button onClick={() => { setEditingChore(chore); setIsAdding(true); }} className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg">
+                        <button 
+                          onClick={() => handleEdit(chore)} 
+                          className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        >
                           <Settings size={18} />
                         </button>
-                      </div>
                     </div>
                   </Reorder.Item>
                 ))}
