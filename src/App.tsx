@@ -126,18 +126,16 @@ export default function App() {
     };
   }, [currentUser]);
 
- // --- Handlers ---
+// --- Handlers ---
   const handleAddChore = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newChore.name) return;
 
-    try { // Start of main try block
+    try {
       if (editingChore) {
-        // UPDATE EXISTING
         const choreRef = doc(db, "chores", editingChore);
         await updateDoc(choreRef, { ...newChore });
       } else {
-        // CREATE NEW
         await addDoc(collection(db, "chores"), {
           ...newChore,
           created_at: new Date().toISOString(),
@@ -145,28 +143,7 @@ export default function App() {
         });
       }
       
-      // Reset and Close
       setIsAdding(false);
-      setEditingChore(null);
-      setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
-      
-    } catch (error) { // This MUST follow the closing brace of the try block
-      console.error("Error saving chore:", error);
-    }
-  }; // End of handleAddChore
-
-  const handleDeleteChore = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this chore?")) return;
-    
-    try {
-      await deleteDoc(doc(db, "chores", id));
-    } catch (error) {
-      console.error("Error deleting chore:", error);
-    }
-  }; // <--- This closes handleDeleteChore
-      
-      // Reset and Close
-      setIsAddingChore(false);
       setEditingChore(null);
       setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
     } catch (error) {
@@ -174,13 +151,23 @@ export default function App() {
     }
   };
 
+  const handleDeleteChore = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this chore?")) return;
+    try {
+      await deleteDoc(doc(db, "chores", id));
+    } catch (error) {
+      console.error("Error deleting chore:", error);
+    }
+  };
+
   const handleDelete = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!editingChore) return;
-    if (!window.confirm(`Delete "${editingChore.name}"?`)) return;
+    // We use editingChore as an ID string based on handleEdit logic
+    if (!window.confirm(`Delete this chore?`)) return;
 
     try {
-      await deleteDoc(doc(db, "chores", editingChore.id));
+      await deleteDoc(doc(db, "chores", editingChore));
       setEditingChore(null);
       setIsAdding(false);
     } catch (error) {
@@ -192,12 +179,10 @@ export default function App() {
     e.preventDefault();
     if (!newUser.name) return;
     try {
-      // We are now explicitly passing both name AND email to Firestore
       await addDoc(collection(db, "users"), { 
         name: newUser.name, 
         email: newUser.email 
       });
-      // Clear the form
       setNewUser({ name: "", email: "" });
     } catch (error) {
       console.error("Failed to add user:", error);
@@ -215,17 +200,14 @@ export default function App() {
     }
   };
 
- const handleComplete = async (choreId: string) => {
+  const handleComplete = async (choreId: string) => {
     if (!currentUser) return;
     try {
       const choreRef = doc(db, "chores", choreId);
-      
-      // 1. Update the chore itself
       await updateDoc(choreRef, {
         last_completed_at: new Date().toISOString()
       });
 
-      // 2. Log the completion to a new "history" collection
       await addDoc(collection(db, "completions"), {
         choreId,
         userId: currentUser.id,
@@ -239,10 +221,10 @@ export default function App() {
 
   const handleReorder = async (newOrder: Chore[]) => {
     setChores(newOrder);
-    // Future expansion: sync sort_order to Firebase
+    // Logic for Firebase sync can be added here
   };
-  
-const handleEdit = (chore: Chore) => {
+
+  const handleEdit = (chore: Chore) => {
     setEditingChore(chore.id);
     setNewChore({
       name: chore.name,
@@ -250,9 +232,8 @@ const handleEdit = (chore: Chore) => {
       frequency: chore.frequency,
       start_date: chore.start_date || ''
     });
-    setIsAdding(true); // Changed from setIsAddingChore
+    setIsAdding(true);
   };
-
  const getDaysOverdue = (chore: Chore) => {
     const now = new Date();
     // Normalize "Today" to midnight for clean comparison
