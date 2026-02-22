@@ -322,6 +322,12 @@ export default function App() {
                             <span className={`flex items-center gap-1.5 capitalize px-2 py-0.5 rounded-md border ${FREQUENCY_COLORS[chore.frequency].bg} ${FREQUENCY_COLORS[chore.frequency].text} ${FREQUENCY_COLORS[chore.frequency].border}`}>
                               <Calendar size={14} /> {chore.frequency}
                             </span>
+                            {chore.start_date && (
+                              <span className="flex items-center gap-1.5 ml-2">
+                                <Calendar size={14} className="text-emerald-500" />
+                                <span className="text-gray-400">Starts:</span> {new Date(chore.start_date).toLocaleDateString()}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
