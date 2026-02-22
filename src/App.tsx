@@ -330,81 +330,81 @@ export default function App() {
               </button>
             </div>
 
-            <Reorder.Group axis="y" values={chores} onReorder={handleReorder} className="space-y-4">
-              <AnimatePresence mode="popLayout">
-                {chores.map((chore) => (
-                  <Reorder.Item
-                    key={chore.id}
-                    value={chore}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className={`group bg-white p-6 rounded-2xl border border-black/5 shadow-sm hover:shadow-md transition-all cursor-grab active:cursor-grabbing ${
-                      !isDue(chore) ? "opacity-60" : ""
+            <Reorder.Group 
+            axis="y" 
+            values={chores} 
+            onReorder={handleReorder} 
+            className="space-y-4"
+          >
+            <AnimatePresence mode="popLayout">
+              {chores.map((chore) => (
+                <Reorder.Item
+                  key={chore.id}
+                  value={chore}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-white rounded-3xl p-6 shadow-sm border border-black/5 flex items-center gap-6 group relative"
+                >
+                  <button
+                    onClick={() => handleComplete(chore.id)}
+                    className={`w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition-all duration-300 ${
+                      !isDue(chore)
+                        ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-200'
+                        : 'border-gray-100 text-transparent hover:border-emerald-500 hover:text-emerald-500'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-6">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleComplete(chore.id);
-                          }}
-                          className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
-                            isDue(chore) 
-                              ? `${FREQUENCY_COLORS[chore.frequency].bg} ${FREQUENCY_COLORS[chore.frequency].text} hover:${FREQUENCY_COLORS[chore.frequency].accent} hover:text-white` 
-                              : "bg-gray-100 text-gray-400 hover:bg-emerald-50 hover:text-emerald-600"
-                          }`}
-                        >
-                          <CheckCircle2 size={28} />
-                        </button>
-                        <div>
-                          <h3 className="text-xl font-semibold">{chore.name}</h3>
-                          <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
-                            <span className="flex items-center gap-1.5"><Clock size={14} /> {chore.duration}</span>
-                            <span className={`flex items-center gap-1.5 capitalize px-2 py-0.5 rounded-md border ${FREQUENCY_COLORS[chore.frequency].bg} ${FREQUENCY_COLORS[chore.frequency].text} ${FREQUENCY_COLORS[chore.frequency].border}`}>
-                              <Calendar size={14} /> {chore.frequency}
-                            </span>
-                            {chore.start_date && (
-                              <span className="flex items-center gap-1.5 ml-2">
-                                <Calendar size={14} className="text-emerald-500" />
-                                <span className="text-gray-400">Starts:</span> {new Date(chore.start_date + 'T00:00:00').toLocaleDateString()}
-                              </span>
-                            )}
-                          </div>
-                        </div>
+                    <CheckCircle2 size={24} />
+                  </button>
+
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-xl font-semibold">{chore.name}</h3>
+                      <div>
+                        {getDaysOverdue(chore) < 0 ? (
+                          <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">Upcoming</span>
+                        ) : !isDue(chore) ? (
+                          <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Completed</span>
+                        ) : getDaysOverdue(chore) > 0 ? (
+                          <span className="text-xs font-bold uppercase tracking-widest text-red-600 bg-red-50 px-3 py-1 rounded-full">{getDaysOverdue(chore)} Days Overdue</span>
+                        ) : (
+                          <span className="text-xs font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Due Today</span>
+                        )}
                       </div>
-                      
-                      <div className="flex flex-col items-end gap-3">
-                        <div>
-                          {getDaysOverdue(chore) < 0 ? (
-                            <span className="text-xs font-bold uppercase tracking-widest text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                              Upcoming
-                            </span>
-                          ) : !isDue(chore) ? (
-                            <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
-                              Completed
-                            </span>
-                          ) : getDaysOverdue(chore) > 0 ? (
-                            <span className="text-xs font-bold uppercase tracking-widest text-red-600 bg-red-50 px-3 py-1 rounded-full">
-                              {getDaysOverdue(chore)} Days Overdue
-                            </span>
-                          ) : (
-                            <span className="text-xs font-bold uppercase tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
-                              Due Today
-                            </span>
-                          )}
-                        <button 
-                          onClick={() => handleEdit(chore)} 
-                          className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                        >
-                          <Settings size={18} />
-                        </button>
                     </div>
-                  </Reorder.Item>
-                ))}
-              </AnimatePresence>
-            </Reorder.Group>
+
+                    <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-500">
+                      <span className="flex items-center gap-1.5"><Clock size={14} /> {chore.duration}</span>
+                      <span className={`flex items-center gap-1.5 capitalize px-2 py-0.5 rounded-md border ${FREQUENCY_COLORS[chore.frequency].bg} ${FREQUENCY_COLORS[chore.frequency].text} ${FREQUENCY_COLORS[chore.frequency].border}`}>
+                        <Calendar size={14} /> {chore.frequency}
+                      </span>
+                      {chore.start_date && (
+                        <span className="flex items-center gap-1.5 ml-2">
+                          <Calendar size={14} className="text-emerald-500" />
+                          <span className="text-gray-400">Starts:</span> {new Date(chore.start_date + 'T00:00:00').toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => handleEdit(chore)}
+                      className="p-2 text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                    >
+                      <Settings size={18} />
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteChore(chore.id)}
+                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </Reorder.Item>
+              ))}
+            </AnimatePresence>
+          </Reorder.Group>
           </div>
 
           <div className="space-y-8">
