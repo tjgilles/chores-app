@@ -454,55 +454,34 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Manage Users Modal */}
+     {/* Manage Users Modal */}
       <AnimatePresence>
         {isManagingUsers && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsManagingUsers(false)} className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
             <motion.div className="relative bg-white w-full max-w-md p-8 rounded-3xl shadow-2xl space-y-6">
               <h2 className="text-2xl font-bold">People</h2>
-              
-              <div className="space-y-3 max-h-[200px] overflow-y-auto">
+              <div className="space-y-3">
                 {users.map(user => (
                   <div key={user.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
                     <div className="flex flex-col">
                       <span className="font-semibold text-sm">{user.name}</span>
-                      <p className="text-[10px] text-gray-500 truncate max-w-[150px]">
-                        {user.email || "No email provided"}
-                      </p>
+                      <p className="text-[10px] text-gray-500">{user.email || "No email"}</p>
                     </div>
-                    <button onClick={(e) => handleDeleteUser(e, user.id, user.name)} className="text-gray-400 hover:text-red-500">
-                      <Trash2 size={16} />
-                    </button>
+                    <button onClick={(e) => handleDeleteUser(e, user.id, user.name)} className="text-gray-400 hover:text-red-500"><Trash2 size={16} /></button>
                   </div>
                 ))}
               </div>
-
               <form onSubmit={handleAddUser} className="pt-4 border-t space-y-3">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Add New Person</p>
-                <input 
-                  type="text" 
-                  placeholder="Name" 
-                  value={newUser.name} 
-                  onChange={e => setNewUser({...newUser, name: e.target.value})} 
-                  className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all" 
-                />
-                <input 
-                  type="email" 
-                  placeholder="Email address" 
-                  value={newUser.email} 
-                  onChange={e => setNewUser({...newUser, email: e.target.value})} 
-                  className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all" 
-                />
-                <button type="submit" className="w-full px-6 py-3 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all">
-                  Add Person
-                </button>
+                <input type="text" placeholder="Name" value={newUser.name} onChange={e => setNewUser({...newUser, name: e.target.value})} className="w-full bg-gray-50 border-none rounded-xl px-4 py-3" />
+                <input type="email" placeholder="Email" value={newUser.email} onChange={e => setNewUser({...newUser, email: e.target.value})} className="w-full bg-gray-50 border-none rounded-xl px-4 py-3" />
+                <button type="submit" className="w-full px-6 py-3 bg-black text-white rounded-xl font-bold">Add Person</button>
               </form>
-              
-              <button onClick={() => setIsManagingUsers(false)} className="w-full py-3 text-gray-500 hover:text-gray-700 font-medium">
-                Close
-              </button>
+              <button onClick={() => setIsManagingUsers(false)} className="w-full py-3 text-gray-500">Close</button>
             </motion.div>
           </div>
         )}
-      </AnimatePresence
+      </AnimatePresence>
+    </div>
+  );
+}
