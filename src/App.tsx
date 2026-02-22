@@ -388,13 +388,27 @@ export default function App() {
             >
               <h2 className="text-2xl font-bold">{editingChore ? "Edit" : "New"} Chore</h2>
               <input type="text" value={newChore.name} onChange={e => setNewChore({...newChore, name: e.target.value})} placeholder="Chore Name" className="w-full bg-gray-50 border-none rounded-xl px-4 py-3" />
-              <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
                 <input type="text" value={newChore.duration} onChange={e => setNewChore({...newChore, duration: e.target.value})} placeholder="Duration" className="w-full bg-gray-50 border-none rounded-xl px-4 py-3" />
                 <select value={newChore.frequency} onChange={e => setNewChore({...newChore, frequency: e.target.value as any})} className="w-full bg-gray-50 border-none rounded-xl px-4 py-3">
                   <option value="daily">Daily</option>
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="biannually">Biannually</option>
+                  <option value="yearly">Yearly</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 block">Start Date</label>
+                <input 
+                  type="date" 
+                  value={newChore.start_date || ''} 
+                  onChange={e => setNewChore({...newChore, start_date: e.target.value})} 
+                  className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500 transition-all" 
+                />
+                <p className="text-[10px] text-gray-400 mt-1">The chore will stay in "Upcoming" status until this date.</p>
               </div>
               <div className="flex gap-3 pt-4">
                 {editingChore && <button type="button" onClick={handleDelete} className="p-3 text-red-500 hover:bg-red-50 rounded-xl"><Trash2 size={24} /></button>}
