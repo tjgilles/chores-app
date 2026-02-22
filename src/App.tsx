@@ -78,7 +78,7 @@ export default function App() {
 
   // --- Real-time Data Sync ---
   useEffect(() => {
-    // Listen for Chores
+    // 1. Listen for Chores
     const qChores = query(collection(db, "chores"), orderBy("sort_order", "asc"));
     const unsubscribeChores = onSnapshot(qChores, (snapshot) => {
       const choresData = snapshot.docs.map(doc => ({
@@ -88,7 +88,7 @@ export default function App() {
       setChores(choresData);
     });
 
-    // Listen for Users
+    // 2. Listen for Users
     const qUsers = collection(db, "users");
     const unsubscribeUsers = onSnapshot(qUsers, (snapshot) => {
       const usersData = snapshot.docs.map(doc => ({
@@ -101,9 +101,28 @@ export default function App() {
       }
     });
 
+    // 3. Listen for Completions (The Leaderboard Logic)
+    const qStats = collection(db, "completions");
+    const unsubscribeStats = onSnapshot(qStats, (snapshot) => {
+      const counts: Record<string, number> = {};
+      snapshot.docs.forEach(doc => {
+        const data = doc.data();
+        if (data.userName) {
+          counts[data.userName] = (counts[data.userName] || 0) + 1;
+        }
+      });
+      
+      const statsData = Object.entries(counts).map(([name, count]) => ({
+        name,
+        completion_count: count
+      }));
+      setStats(statsData);
+    });
+
     return () => {
       unsubscribeChores();
       unsubscribeUsers();
+      unsubscribeStats(); // Clean up all three listeners
     };
   }, [currentUser]);
 
