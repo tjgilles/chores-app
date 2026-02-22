@@ -126,8 +126,8 @@ export default function App() {
     };
   }, [currentUser]);
 
-  // --- Handlers ---
- const handleAddChore = async (e: React.FormEvent) => {
+ // --- Handlers ---
+  const handleAddChore = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newChore.name) return;
 
@@ -144,6 +144,25 @@ export default function App() {
           sort_order: chores.length
         });
       }
+      
+      // Reset and Close
+      setIsAdding(false);
+      setEditingChore(null);
+      setNewChore({ name: '', duration: '', frequency: 'weekly', start_date: '' });
+    } catch (error) {
+      console.error("Error saving chore:", error);
+    }
+  }; // <--- This closes handleAddChore
+
+  const handleDeleteChore = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this chore?")) return;
+    
+    try {
+      await deleteDoc(doc(db, "chores", id));
+    } catch (error) {
+      console.error("Error deleting chore:", error);
+    }
+  }; // <--- This closes handleDeleteChore
       
       // Reset and Close
       setIsAddingChore(false);
