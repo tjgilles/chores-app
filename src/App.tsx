@@ -431,16 +431,77 @@ const handleEdit = (chore: Chore) => {
           </div>
 
           <div className="space-y-8">
+            {/* 1. Household Activity / Leaderboard */}
             <section className="bg-white p-8 rounded-3xl border border-black/5 shadow-sm">
               <div className="flex items-center gap-3 mb-8">
-                <BarChart3 className="text-emerald-600" />
-                <h2 className="text-xl font-bold">Household Activity</h2>
+                <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                  <BarChart3 size={20} />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight">Leaderboard</h2>
               </div>
-              <p className="text-sm text-gray-500">Live sync is operational.</p>
+              
+              <div className="space-y-6">
+                {stats.length > 0 ? stats.map((userStat) => (
+                  <div key={userStat.name} className="space-y-2">
+                    <div className="flex justify-between text-sm font-medium">
+                      <span>{userStat.name}</span>
+                      <span className="text-emerald-600 font-bold">{userStat.completion_count}</span>
+                    </div>
+                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${Math.min((userStat.completion_count / 10) * 100, 100)}%` }}
+                        className="h-full bg-emerald-500 rounded-full"
+                      />
+                    </div>
+                  </div>
+                )) : (
+                  <p className="text-xs text-gray-400 italic">No activity recorded yet this week.</p>
+                )}
+              </div>
             </section>
-          </div>
-        </div>
-      </main>
+
+            {/* 2. Smart Notifications / Black Box */}
+            <section className="bg-black text-white p-8 rounded-3xl shadow-xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-bold tracking-tight">Smart Notifications</h3>
+                <div className="flex items-center gap-2 text-emerald-400 text-[10px] font-bold uppercase tracking-widest">
+                  <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                  Live Sync
+                </div>
+              </div>
+              
+              <div className="space-y-8">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4 font-mono">Daily Digest</p>
+                  <div className="space-y-3">
+                    {chores.filter(c => isDue(c)).length > 0 ? (
+                      chores.filter(c => isDue(c)).slice(0, 3).map(chore => (
+                        <div key={chore.id} className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10">
+                          <div className={`w-2 h-2 rounded-full ${FREQUENCY_COLORS[chore.frequency].bg.replace('bg-', 'bg-')}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-bold text-sm truncate">{chore.name}</p>
+                            <p className="text-[10px] text-gray-400 uppercase tracking-tight">Action Required</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-emerald-400 italic">You're all caught up! ✨</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-white/10">
+                  <p className="text-xs font-bold uppercase tracking-widest text-emerald-500 mb-4 font-mono">Sunday Preview</p>
+                  <div className="bg-white/5 rounded-2xl p-5 border border-white/5">
+                    <p className="text-[11px] text-gray-400 leading-relaxed mb-4">
+                      {chores.length} tasks in rotation. 
+                      <strong> {chores.filter(c => isDue(c)).length}</strong> are currently due.
+                    </p>
+                    <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                      <div 
+                        className="bg-emerald-500 h-full" 
+                        style={{ width: `${(chores.filter(c => !isDue(c)).length / chores.length) * 100}%` }}
 
       <AnimatePresence>
         {isAdding && (
