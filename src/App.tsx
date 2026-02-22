@@ -276,7 +276,19 @@ export default function App() {
     }
   };
 
-  const isDue = (chore: Chore) => getDaysOverdue(chore) >= 0;
+  const isDue = (chore: Chore) => {
+    // 1. If the chore was NEVER completed, it's "Due" as long as its start date has arrived
+    if (!chore.last_completed_at) {
+      if (!chore.start_date) return true;
+      const start = new Date(chore.start_date + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return start <= today;
+    }
+
+    // 2. If it HAS been done before, it's only "Due" if enough days have passed
+    return getDaysOverdue(chore) >= 0;
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-[#1a1a1a] font-sans selection:bg-emerald-100">
