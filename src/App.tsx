@@ -325,7 +325,7 @@ export default function App() {
                             {chore.start_date && (
                               <span className="flex items-center gap-1.5 ml-2">
                                 <Calendar size={14} className="text-emerald-500" />
-                                <span className="text-gray-400">Starts:</span> {new Date(chore.start_date).toLocaleDateString()}
+                                <span className="text-gray-400">Starts:</span> {new Date(chore.start_date + 'T00:00:00').toLocaleDateString()}
                               </span>
                             )}
                           </div>
