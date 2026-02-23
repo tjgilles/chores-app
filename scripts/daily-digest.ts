@@ -6,12 +6,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Use your actual Firebase Config here
 const firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
+  apiKey: "AIzaSyCT9yJT_KOivQGbfIKpmNSxXqJMVB9PY-g",
+  authDomain: "chores-88a3f.firebaseapp.com",
+  projectId: "chores-88a3f",
+  storageBucket: "chores-88a3f.firebasestorage.app",
+  messagingSenderId: "307911093238",
+  appId: "1:307911093238:web:00d961a6b206e62c1e35d7",
 };
 
 const app = initializeApp(firebaseConfig);
