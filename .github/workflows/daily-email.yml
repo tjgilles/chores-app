@@ -1,0 +1,22 @@
+name: Daily Chore Digest
+on:
+  schedule:
+    # 15:00 UTC is 7:00 AM or 8:00 AM in LA depending on DST
+    - cron: '0 15 * * *'
+  workflow_dispatch: 
+
+jobs:
+  send-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Daily Script
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: npx tsx scripts/daily-digest.ts
