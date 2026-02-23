@@ -46,12 +46,36 @@ async function sendDailyDigest() {
         to: user.email,
         subject: `☀️ Daily Digest: ${dueToday.length} Tasks for Today`,
         html: `
-          <h2>Good Morning, ${user.name}!</h2>
-          <p>Here are your action items for today:</p>
-          <ul>
-            ${dueToday.map(c => `<li><strong>${c.name}</strong> (${c.duration})</li>`).join('')}
-          </ul>
-          <p>Check them off here: <a href="your-app-url.com">ChoreSync Dashboard</a></p>
+          <div style="font-family: sans-serif; background-color: #f5f5f5; padding: 40px 20px;">
+            <div style="max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #1a1a1a; font-size: 24px; margin-bottom: 8px;">Good Morning, ${user.name}!</h2>
+              <p style="color: #666; margin-bottom: 32px;">Here are your action items for ${new Date().toLocaleDateString()}:</p>
+              
+              ${dueToday.map(c => `
+                <div style="background: white; border-radius: 24px; padding: 24px; margin-bottom: 16px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                  <table width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td width="60" valign="top">
+                        <div style="width: 48px; height: 48px; border: 2px solid #f1f1f1; border-radius: 16px;"></div>
+                      </td>
+                      <td style="padding-left: 16px;">
+                        <div style="font-size: 12px; font-weight: bold; color: #059669; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Due Today</div>
+                        <div style="font-size: 18px; font-weight: bold; color: #1a1a1a;">${c.name}</div>
+                        <div style="font-size: 14px; color: #666; margin-top: 4px;">⏱️ ${c.duration} • 📅 ${c.frequency}</div>
+                      </td>
+                      <td align="right">
+                        <a href="YOUR_APP_URL_HERE" style="background: #059669; color: white; padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;">Check Off</a>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              `).join('')}
+
+              <p style="text-align: center; margin-top: 32px;">
+                <a href="YOUR_APP_URL_HERE" style="color: #666; text-decoration: underline; font-size: 12px;">View Full Leaderboard</a>
+              </p>
+            </div>
+          </div>
         `
       });
     }
