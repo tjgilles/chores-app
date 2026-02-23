@@ -1,0 +1,18 @@
+name: Sunday Chore Preview
+on:
+  schedule:
+    # This runs every Sunday at 4:00 PM (16:00) UTC
+    - cron: '0 16 * * 0'
+  workflow_dispatch: # Allows you to run it manually for testing
+
+jobs:
+  send-emails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: Run Sunday Script
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: npx ts-node scripts/sunday-preview.ts
