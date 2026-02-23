@@ -91,7 +91,7 @@ async function sendSundayPreview() {
               </div>
 
               <p style="text-align: center; margin-top: 32px;">
-                <a href="YOUR_APP_URL_HERE" style="background: #1a1a1a; color: white; padding: 14px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">Open Weekly Dashboard</a>
+                <a href="https://chores-app--chores-88a3f.us-east4.hosted.app/" style="background: #1a1a1a; color: white; padding: 14px 24px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">Open Weekly Dashboard</a>
               </p>
             </div>
           </div>
