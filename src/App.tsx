@@ -201,21 +201,36 @@ export default function App() {
   };
 
   const handleComplete = async (choreId: string) => {
-    if (!currentUser) return;
+    const chore = chores.find(c => c.id === choreId);
+    if (!chore) return;
+
     try {
       const choreRef = doc(db, "chores", choreId);
-      await updateDoc(choreRef, {
-        last_completed_at: new Date().toISOString()
-      });
+      
+      if (!isDue(chore)) {
+        // UNCHECK: If it's already done, set last_completed_at to null
+        await updateDoc(choreRef, {
+          last_completed_at: null
+        });
+      } else {
+        // CHECK: If it's due, mark it as completed now
+        const now = new Date().toISOString();
+        await updateDoc(choreRef, {
+          last_completed_at: now,
+          completed_by: "Thomson" 
+        });
 
-      await addDoc(collection(db, "completions"), {
-        choreId,
-        userId: currentUser.id,
-        userName: currentUser.name,
-        completedAt: serverTimestamp()
-      });
+        // Log the activity for the leaderboard
+        await addDoc(collection(db, "activity"), {
+          chore_id: choreId,
+          chore_name: chore.name,
+          completed_at: now,
+          user_name: "Thomson",
+          points: 10
+        });
+      }
     } catch (error) {
-      console.error("Failed to complete chore:", error);
+      console.error("Error toggling chore completion:", error);
     }
   };
 
