@@ -64,7 +64,7 @@ async function sendDailyDigest() {
                         <div style="font-size: 14px; color: #666; margin-top: 4px;">⏱️ ${c.duration} • 📅 ${c.frequency}</div>
                       </td>
                       <td align="right">
-                        <a href="YOUR_APP_URL_HERE" style="background: #059669; color: white; padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;">Check Off</a>
+                        <a href="https://chores-app--chores-88a3f.us-east4.hosted.app/" style="background: #059669; color: white; padding: 12px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 14px;">Check Off</a>
                       </td>
                     </tr>
                   </table>
@@ -72,7 +72,7 @@ async function sendDailyDigest() {
               `).join('')}
 
               <p style="text-align: center; margin-top: 32px;">
-                <a href="YOUR_APP_URL_HERE" style="color: #666; text-decoration: underline; font-size: 12px;">View Full Leaderboard</a>
+                <a href="https://chores-app--chores-88a3f.us-east4.hosted.app/" style="color: #666; text-decoration: underline; font-size: 12px;">View Full Leaderboard</a>
               </p>
             </div>
           </div>
